@@ -4,7 +4,7 @@ from flask import make_response
 
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
-from database_setup import Base, Catagory, Item, User
+from database_setup import Base, Category, Item, User
 
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
@@ -212,7 +212,12 @@ session = DBSession()
 @app.route('/')
 @app.route('/recommendations/')
 def showRecommendations():
-    return render_template('base.html');
+    categories = session.query(Category).order_by(asc(Category.name))
+    items = session.query(Item)
+    return render_template('home.html',
+                           itemHeading="Latest Recommendations",
+                           categories=categories,
+                           items=items);
     # restaurants = session.query(Restaurant).order_by(asc(Restaurant.name))
     # if 'username' not in login_session:
     #     return render_template('publicrestaurants.html', restaurants=restaurants)

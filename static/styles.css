@@ -11,7 +11,7 @@ a {
 }
 
 .container {
-  min-width: 500px;
+  min-width: 550px;
 }
 
 header {
@@ -21,6 +21,16 @@ header {
   flex-wrap: wrap;
   justify-content: center;
   background-color: #3570ce;
+}
+
+ul {
+  position: relative;
+  right: 40px;
+  list-style: none;
+}
+
+li {
+  margin-top: 5px;
 }
 
 .title {
@@ -56,6 +66,27 @@ header {
   padding: 25px;
   background-color: white;
   border: 2px solid grey;
+}
+
+.content {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.category {
+  height: 100%;
+  width: 30%;
+  border-right: 1px solid grey;
+}
+
+.item {
+  height:100%;
+  width: 65%;
+  position: relative;
+  left: 20px;
 }
 
 footer {

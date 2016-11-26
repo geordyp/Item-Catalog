@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="content">
+  <div class="category">
+    <h2>Categories</h2>
+    <ul>
+      {% for c in categories %}
+        <li>{{c.name}}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="item">
+    <h2>{{itemHeading}}</h2>
+    <ul>
+      {% for i in items %}
+        <li>{{i.title}} ({{i.category.name}})</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+
+{% endblock %}
