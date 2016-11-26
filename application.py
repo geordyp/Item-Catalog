@@ -225,14 +225,14 @@ def showRecommendations():
     #     return render_template('restaurants.html', restaurants=restaurants)
 
 
-@app.route('/recommendations/<string:category>/')
-@app.route('/recommendations/<string:category>/items/')
-def showCategory(category):
+@app.route('/recommendations/<string:category_name>/')
+@app.route('/recommendations/<string:category_name>/items/')
+def showCategory(category_name):
     categories = session.query(Category).order_by(asc(Category.name))
-    c = session.query(Category).filter_by(name=category).one()
-    items = session.query(Item).filter_by(category_id=c.id).order_by(desc(Item.id))
+    category = session.query(Category).filter_by(name=category_name).one()
+    items = session.query(Item).filter_by(category_id=category.id).order_by(desc(Item.id))
     return render_template('items.html',
-                           itemHeading="Recommendations in " + category,
+                           itemHeading="Recommendations in " + category_name,
                            categories=categories,
                            items=items);
     # restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
@@ -245,9 +245,11 @@ def showCategory(category):
     #     return render_template('menu.html', items=items, restaurant=restaurant, creator=creator)
 
 
-@app.route('/recommendations/<string:category>/<string:item>/')
-def showItem(category, item):
-    return "item page: " + category + ", " + item;
+@app.route('/recommendations/<string:category_name>/<string:item_name>/')
+def showItem(category_name, item_name):
+    item = session.query(Item).filter_by(title=item_name).one()
+    return render_template('item.html',
+                           item=item);
     # if 'username' not in login_session:
     #     return redirect('/login')
     # restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()

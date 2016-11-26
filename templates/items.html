@@ -14,7 +14,7 @@
     <h2>{{itemHeading}}</h2>
     <ul>
       {% for i in items %}
-        <li><a href="#">{{i.title}}</a> ({{i.category.name}})</li>
+        <li><a href="/recommendations/{{i.category.name}}/{{i.title}}">{{i.title}}</a> ({{i.category.name}})</li>
       {% endfor %}
     </ul>
   </div>
