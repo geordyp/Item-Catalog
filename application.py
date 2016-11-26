@@ -212,7 +212,7 @@ session = DBSession()
 @app.route('/')
 @app.route('/recommendations/')
 def showRecommendations():
-    return "home";
+    return render_template('base.html');
     # restaurants = session.query(Restaurant).order_by(asc(Restaurant.name))
     # if 'username' not in login_session:
     #     return render_template('publicrestaurants.html', restaurants=restaurants)

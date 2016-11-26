@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Item Catalog Project</title>
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+  </head>
+
+<body>
+  <div class="container">
+    <header>
+      <div class="title">
+        <div class="title_main">Yo Check This Out!</div>
+        <div class="title_sub">User Recommendations</div>
+      </div>
+      <div class="login"><a id="login_link" href="/recommendations">login</a></div>
+    </header>
+
+    <section id="content">
+      {% block content %}
+      {% endblock %}
+    </section>
+
+    <footer>
+      <p>Thanks for visiting!</p>
+    </footer>
+  </div>
+</body>
+
+</html>
