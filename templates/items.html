@@ -6,7 +6,7 @@
     <h2>Categories</h2>
     <ul>
       {% for c in categories %}
-        <li>{{c.name}}</li>
+        <li><a href="/recommendations/{{c.name}}/items">{{c.name}}</a></li>
       {% endfor %}
     </ul>
   </div>
@@ -14,7 +14,7 @@
     <h2>{{itemHeading}}</h2>
     <ul>
       {% for i in items %}
-        <li>{{i.title}} ({{i.category.name}})</li>
+        <li><a href="#">{{i.title}}</a> ({{i.category.name}})</li>
       {% endfor %}
     </ul>
   </div>

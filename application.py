@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, jsonify, url_for, f
 from flask import session as login_session
 from flask import make_response
 
-from sqlalchemy import create_engine, asc
+from sqlalchemy import create_engine, asc, desc
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Category, Item, User
 
@@ -213,8 +213,8 @@ session = DBSession()
 @app.route('/recommendations/')
 def showRecommendations():
     categories = session.query(Category).order_by(asc(Category.name))
-    items = session.query(Item)
-    return render_template('home.html',
+    items = session.query(Item).order_by(desc(Item.id)).limit(10)
+    return render_template('items.html',
                            itemHeading="Latest Recommendations",
                            categories=categories,
                            items=items);
@@ -228,7 +228,13 @@ def showRecommendations():
 @app.route('/recommendations/<string:category>/')
 @app.route('/recommendations/<string:category>/items/')
 def showCategory(category):
-    return "category page: " + category;
+    categories = session.query(Category).order_by(asc(Category.name))
+    c = session.query(Category).filter_by(name=category).one()
+    items = session.query(Item).filter_by(category_id=c.id).order_by(desc(Item.id))
+    return render_template('items.html',
+                           itemHeading="Recommendations in " + category,
+                           categories=categories,
+                           items=items);
     # restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
     # creator = getUserInfo(restaurant.user_id)
     # items = session.query(MenuItem).filter_by(
