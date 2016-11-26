@@ -248,7 +248,7 @@ def showCategory(category_name):
 @app.route('/recommendations/<string:category_name>/<string:item_name>/')
 def showItem(category_name, item_name):
     item = session.query(Item).filter_by(title=item_name).one()
-    return render_template('item.html',
+    return render_template("item.html",
                            item=item);
     # if 'username' not in login_session:
     #     return redirect('/login')
@@ -266,7 +266,8 @@ def showItem(category_name, item_name):
 
 @app.route('/recommendations/new/', methods=['GET', 'POST'])
 def newItem():
-    return "create new item";
+    categories = session.query(Category).order_by(asc(Category.name))
+    return render_template("new_item.html", categories=categories);
     # if 'username' not in login_session:
     #     return redirect('/login')
     # restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()

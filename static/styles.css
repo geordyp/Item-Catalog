@@ -89,6 +89,11 @@ li {
   left: 20px;
 }
 
+textarea {
+  height: 100px;
+  width: 300px;
+}
+
 footer {
   margin-top: 50px;
   text-align: center;
