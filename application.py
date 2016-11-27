@@ -9,6 +9,8 @@ from database_setup import Base, Category, Item, User
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
 
+from functools import wraps
+
 import string
 import random
 import json
@@ -222,6 +224,18 @@ def recommendationsJSON():
     return jsonify(items=[i.serialize for i in items])
 
 
+def login_required(f):
+    """ Function decorator for functions that require logins """
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        # check if user is logged in
+        user = isUserLoggedIn()
+        if not user:
+            return redirect(url_for('showLogin'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+
 @app.route('/')
 @app.route('/recommendations')
 def showRecommendations():
@@ -281,13 +295,9 @@ def showItem(category_name, item_name):
 
 
 @app.route('/recommendations/new', methods=['GET', 'POST'])
+@login_required
 def newItem():
     """ Show a form to create a new recommendation (item) """
-    # check if user is logged in
-    user = isUserLoggedIn()
-    if not user:
-        return redirect(url_for('showLogin'))
-
     # retrieve data
     categories = session.query(Category).order_by(asc(Category.name))
 
@@ -318,13 +328,9 @@ def newItem():
 
 
 @app.route('/recommendations/<string:item_name>/edit', methods=['GET', 'POST'])
+@login_required
 def editItem(item_name):
     """ Show a form to edit a specific recommendation (item) """
-    # check if user is logged in
-    user = isUserLoggedIn()
-    if not user:
-        return redirect(url_for('showLogin'))
-
     # retrieve data
     categories = session.query(Category).order_by(asc(Category.name))
     editedItem = session.query(Item).filter_by(title=item_name).one()
@@ -356,13 +362,9 @@ def editItem(item_name):
 
 
 @app.route('/recommendations/<string:item_name>/delete', methods=['GET', 'POST'])
+@login_required
 def deleteItem(item_name):
     """ Show a form to delete a specific recommendation (item) """
-    # check if user is logged in
-    user = isUserLoggedIn()
-    if not user:
-        return redirect(url_for('showLogin'))
-
     # retrieve data
     deletedItem = session.query(Item).filter_by(title=item_name).one()
 
