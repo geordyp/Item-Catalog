@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class='content'>
+  <h2>Successfully deleted <i>{{item.title}}</i>.</h2>
+  <p><a href='{{ url_for('showRecommendations') }}'>return</a></p>
+</div>
+
+{% endblock %}

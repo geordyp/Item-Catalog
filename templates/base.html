@@ -1,34 +1,34 @@
 <!doctype html>
-<html lang="en">
+<html lang='en'>
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
     <title>Item Catalog Project</title>
-    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
-    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-    <script src="//apis.google.com/js/platform.js?onload=start"></script>
+    <link rel=stylesheet type=text/css href='{{ url_for('static', filename='styles.css') }}'>
+    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+    <script src='//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js'></script>
+    <script src='//apis.google.com/js/platform.js?onload=start'></script>
   </head>
 
 <body>
-  <div class="container">
+  <div class='container'>
     <header>
-      <div class="title">
-        <div class="title_main">Yo Check This Out!</div>
-        <div class="title_sub">
+      <div class='title'>
+        <div class='title_main'>Yo Check This Out!</div>
+        <div class='title_sub'>
           User Recommendations<br>
           <a href='{{ url_for('showRecommendations') }}'>home</a>&nbsp;|&nbsp;
           {% if user %}
-          Howdy,&nbsp;{{user.name}}&nbsp;<a id="login_link" href='{{ url_for('gdisconnect') }}'>logout</a>
+          Howdy,&nbsp;{{user.name}}&nbsp;<a id='login_link' href='{{ url_for('gdisconnect') }}'>logout</a>
           {% else %}
-          <a id="login_link" href='{{ url_for('showLogin') }}'>login</a>
+          <a id='login_link' href='{{ url_for('showLogin') }}'>login</a>
           {% endif %}
         </div>
       </div>
     </header>
 
-    <section id="content">
+    <section id='content'>
       {% block content %}
       {% endblock %}
     </section>

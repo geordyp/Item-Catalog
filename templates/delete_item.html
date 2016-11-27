@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class='content'>
+  <form action='{{ url_for('deleteItem', item_name=item.title) }}' method='post'>
+    <h2>Are you sure you want to delete your <i>{{item.title}}</i> recommendation?</h2>
+    <br><br>
+    <input type='submit' value='Delete'>
+    <a href='{{ url_for('showItem', category_name=item.category.name, item_name=item.title) }}'>Cancel</a>
+  </form>
+</div>
+
+{% endblock %}

@@ -1,19 +1,19 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% block content %}
 
-<div class="content">
-  <div id="signInButton">
+<div class='content'>
+  <div id='signInButton'>
     <p>Sign in to create recommendations of your own!</p>
-    <span class="g-signin"
-      data-scope="openid email"
-      data-clientid="47455612618-b33bq1on57tus11h6jl1dunika6beh8t.apps.googleusercontent.com"
-      data-redirecturi="postmessage"
-      data-accesstype="offline"
-      data-cookiepolicy="single_host_origin"
-      data-callback="signInCallback"
-      data-approvalprompt="force">
+    <span class='g-signin'
+      data-scope='openid email'
+      data-clientid='47455612618-b33bq1on57tus11h6jl1dunika6beh8t.apps.googleusercontent.com'
+      data-redirecturi='postmessage'
+      data-accesstype='offline'
+      data-cookiepolicy='single_host_origin'
+      data-callback='signInCallback'
+      data-approvalprompt='force'>
     </span>
-    <div id="result"></div>
+    <div id='result'></div>
   </div>
 
 </div>

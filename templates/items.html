@@ -1,8 +1,8 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% block content %}
 
-<div class="content">
-  <div class="category">
+<div class='cat_and_item'>
+  <div class='category'>
     <h2>Categories</h2>
     <ul>
       {% for c in categories %}
@@ -10,7 +10,7 @@
       {% endfor %}
     </ul>
   </div>
-  <div class="item">
+  <div class='item'>
     <h2>{{itemHeading}}</h2>
     <ul>
       {% for i in items %}

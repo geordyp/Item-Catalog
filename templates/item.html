@@ -1,12 +1,13 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% block content %}
 
-<div class="content">
+<div class='content'>
   <h2>{{item.title}}</h2>
   <p><b>Description:</b> {{item.description}}</p>
   <br>
   {% if canEdit %}
-  <a href="#">Edit</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="#">Delete</a>
+  <a href='{{ url_for('editItem', item_name=item.title) }}'>Edit</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+  <a href='{{ url_for('deleteItem', item_name=item.title) }}'>Delete</a>
   {% endif %}
 </div>
 

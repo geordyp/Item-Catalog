@@ -2,7 +2,7 @@ html,
 body {
   margin: 0;
   padding: 0;
-  font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
   background-color: #d2ddef;
 }
 
@@ -59,7 +59,7 @@ li {
   border: 2px solid grey;
 }
 
-.content {
+.cat_and_item {
   height: 100%;
   width: 100%;
   display: flex;
@@ -78,6 +78,11 @@ li {
   width: 65%;
   position: relative;
   left: 20px;
+}
+
+.content {
+  height: 100%;
+  width: 100%;
 }
 
 textarea {

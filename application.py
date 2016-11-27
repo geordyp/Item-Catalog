@@ -19,7 +19,7 @@ app = Flask(__name__)
 
 CLIENT_ID = json.loads(
     open('client_secrets.json', 'r').read())['web']['client_id']
-APPLICATION_NAME = "Item Catalog Project"
+APPLICATION_NAME = 'Item Catalog Project'
 
 
 # Connect to Database and create database session
@@ -36,10 +36,10 @@ def showLogin():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                     for x in xrange(32))
     login_session['state'] = state
-    # return "The current session state is %s" % login_session['state']
-    user = ""
-    if "username" in login_session:
-        user = login_session["username"]
+    # return 'The current session state is %s' % login_session['state']
+    user = ''
+    if 'username' in login_session:
+        user = login_session['username']
 
     return render_template('login.html',
                            STATE=state,
@@ -83,15 +83,15 @@ def gconnect():
     gplus_id = credentials.id_token['sub']
     if result['user_id'] != gplus_id:
         response = make_response(
-            json.dumps("Token's user ID doesn't match given user ID."), 401)
+            json.dumps('Tokens user ID doesnt match given user ID.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
 
     # Verify that the access token is valid for this app.
     if result['issued_to'] != CLIENT_ID:
         response = make_response(
-            json.dumps("Token's client ID does not match app's."), 401)
-        print "Token's client ID does not match app's."
+            json.dumps('Tokens client ID does not match apps.'), 401)
+        print 'Tokens client ID does not match apps.'
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -108,7 +108,7 @@ def gconnect():
     login_session['gplus_id'] = gplus_id
 
     # Get user info
-    userinfo_url = "https://www.googleapis.com/oauth2/v1/userinfo"
+    userinfo_url = 'https://www.googleapis.com/oauth2/v1/userinfo'
     params = {'access_token': credentials.access_token, 'alt': 'json'}
     answer = requests.get(userinfo_url, params=params)
 
@@ -186,31 +186,30 @@ def getUserID(email):
 
 
 def isUserLoggedIn():
-    if "username" in login_session:
-        userID = getUserID(login_session["email"])
+    if 'username' in login_session:
+        userID = getUserID(login_session['email'])
         return getUserInfo(userID)
     return None
 
 
-# # JSON APIs to view Restaurant Information
-# @app.route('/restaurant/<int:restaurant_id>/menu/JSON')
-# def restaurantMenuJSON(restaurant_id):
-#     restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
-#     items = session.query(MenuItem).filter_by(
-#         restaurant_id=restaurant_id).all()
-#     return jsonify(MenuItems=[i.serialize for i in items])
+@app.route('/recommendations/categories/JSON')
+def recommendationsJSON():
+    categories = session.query(Category).all()
+    return jsonify(categories=[c.serialize for c in categories])
 
 
-# @app.route('/restaurant/<int:restaurant_id>/menu/<int:menu_id>/JSON')
-# def menuItemJSON(restaurant_id, menu_id):
-#     Menu_Item = session.query(MenuItem).filter_by(id=menu_id).one()
-#     return jsonify(Menu_Item=Menu_Item.serialize)
+@app.route('/recommendations/<string:category_name>/JSON')
+def categoryJSON(category_name):
+    category = session.query(Category).filter_by(name=category_name).one()
+    items = session.query(Item).filter_by(
+        category_id=category.id).all()
+    return jsonify(items=[i.serialize for i in items])
 
 
-# @app.route('/restaurant/JSON')
-# def restaurantsJSON():
-#     restaurants = session.query(Restaurant).all()
-#     return jsonify(restaurants=[r.serialize for r in restaurants])
+@app.route('/recommendations/JSON')
+def recommendationsJSON():
+    items = session.query(Item).all()
+    return jsonify(items=[i.serialize for i in items])
 
 
 @app.route('/')
@@ -224,7 +223,7 @@ def showRecommendations():
     user = isUserLoggedIn()
 
     return render_template('items.html',
-                           itemHeading="Latest Recommendations",
+                           itemHeading='Latest Recommendations',
                            categories=categories,
                            items=items,
                            home=True,
@@ -243,7 +242,7 @@ def showCategory(category_name):
     user = isUserLoggedIn()
 
     return render_template('items.html',
-                           itemHeading="Recommendations in " + category_name,
+                           itemHeading='Recommendations in ' + category_name,
                            categories=categories,
                            items=items,
                            home=False,
@@ -262,7 +261,7 @@ def showItem(category_name, item_name):
     if user and user == item.user:
         canEdit = True
 
-    return render_template("item.html",
+    return render_template('item.html',
                            item=item,
                            user=user,
                            canEdit=canEdit)
@@ -291,58 +290,70 @@ def newItem():
                                categories=categories,
                                user=user)
 
-    # if 'username' not in login_session:
-    #     return redirect('/login')
-    # restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
-    # if request.method == 'POST':
-    #     newItem = MenuItem(name=request.form['name'], description=request.form['description'], price=request.form[
-    #                        'price'], course=request.form['course'], restaurant_id=restaurant_id, user_id=restaurant.user_id)
-    #     session.add(newItem)
-    #     session.commit()
-    #     flash('New Menu %s Item Successfully Created' % (newItem.name))
-    #     return redirect(url_for('showMenu', restaurant_id=restaurant_id))
-    # else:
-    #     return render_template('newmenuitem.html', restaurant_id=restaurant_id)
+
+@app.route('/recommendations/<string:item_name>/edit', methods=['GET', 'POST'])
+def editItem(item_name):
+    # check if user is logged in
+    user = isUserLoggedIn()
+    if not user:
+        return redirect(url_for('showLogin'))
+
+    # retrieve data
+    categories = session.query(Category).order_by(asc(Category.name))
+    editedItem = session.query(Item).filter_by(title=item_name).one()
+
+    # make the user created the item they're about to edit
+    if user != editedItem.user:
+        return redirect(url_for('showItem',
+                                category_name=editedItem.category.name,
+                                item_name=editedItem.title))
+
+    if request.method == 'POST':
+        if request.form['title']:
+            editedItem.title = request.form['title']
+        if request.form['description']:
+            editedItem.description = request.form['description']
+        if request.form['category']:
+            editedItem.category_id = request.form['category']
+
+        session.add(editedItem)
+        session.commit()
+        return redirect(url_for('showItem',
+                                category_name=editedItem.category.name,
+                                item_name=editedItem.title))
+    else:
+        return render_template('edit_item.html',
+                               categories=categories,
+                               item=editedItem,
+                               user=user)
 
 
-@app.route('/recommendations/<string:item>/edit', methods=['GET', 'POST'])
-def editItem(item):
-    return "edit item: " + item;
-    # if 'username' not in login_session:
-    #     return redirect('/login')
-    # editedItem = session.query(MenuItem).filter_by(id=menu_id).one()
-    # restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
-    # if request.method == 'POST':
-    #     if request.form['name']:
-    #         editedItem.name = request.form['name']
-    #     if request.form['description']:
-    #         editedItem.description = request.form['description']
-    #     if request.form['price']:
-    #         editedItem.price = request.form['price']
-    #     if request.form['course']:
-    #         editedItem.course = request.form['course']
-    #     session.add(editedItem)
-    #     session.commit()
-    #     flash('Menu Item Successfully Edited')
-    #     return redirect(url_for('showMenu', restaurant_id=restaurant_id))
-    # else:
-    #     return render_template('editmenuitem.html', restaurant_id=restaurant_id, menu_id=menu_id, item=editedItem)
+@app.route('/recommendations/<string:item_name>/delete', methods=['GET', 'POST'])
+def deleteItem(item_name):
+    # check if user is logged in
+    user = isUserLoggedIn()
+    if not user:
+        return redirect(url_for('showLogin'))
 
+    # retrieve data
+    deletedItem = session.query(Item).filter_by(title=item_name).one()
 
-@app.route('/recommendations/<string:item>/delete', methods=['GET', 'POST'])
-def deleteItem(item):
-    return "delete item: " + item;
-    # if 'username' not in login_session:
-    #     return redirect('/login')
-    # restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
-    # itemToDelete = session.query(MenuItem).filter_by(id=menu_id).one()
-    # if request.method == 'POST':
-    #     session.delete(itemToDelete)
-    #     session.commit()
-    #     flash('Menu Item Successfully Deleted')
-    #     return redirect(url_for('showMenu', restaurant_id=restaurant_id))
-    # else:
-    #     return render_template('deleteMenuItem.html', item=itemToDelete)
+    # make the user created the item they're about to delete
+    if user != deletedItem.user:
+        return redirect(url_for('showItem',
+                                category_name=deletedItem.category.name,
+                                item_name=deletedItem.title))
+
+    if request.method == 'POST':
+        session.delete(deletedItem)
+        session.commit()
+        return render_template('delete_confirmation.html',
+                               item=deletedItem,
+                               user=user)
+    else:
+        return render_template('delete_item.html',
+                               item=deletedItem,
+                               user=user)
 
 
 if __name__ == '__main__':

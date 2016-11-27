@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class='content'>
+  <form action='{{ url_for('editItem', item_name=item.title) }}' method='post'>
+    <h2>Edit Your <i>{{item.title}}</i> Recommendation</h2>
+    <label>
+      <div>Title</div>
+      <input type='text' name='title'></input>
+    </label>
+    <label>
+      <div>Description</div>
+      <textarea name='description'>{{item.description}}</textarea>
+    </label>
+    <label>
+      <div>Category</div>
+      <select name='category' value='{{item.category.id}}'>
+        {% for c in categories %}
+          {% if c.id == item.category.id %}
+          <option value='{{c.id}}' selected='selected'>{{c.name}}</option>
+          {% else %}
+          <option value='{{c.id}}'>{{c.name}}</option>
+          {% endif %}
+        {% endfor %}
+      </select>
+    </label>
+    <br><br>
+    <input type='submit' value='Edit'>
+    <a href='{{ url_for('showItem', category_name=item.category.name, item_name=item.title) }}'>Cancel</a>
+  </form>
+</div>
+
+{% endblock %}
