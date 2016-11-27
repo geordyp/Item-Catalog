@@ -29,10 +29,10 @@ class Item(Base):
 
     id = Column(Integer, primary_key=True)
     title = Column(String(80), nullable=False)
-    description = Column(String(250))
-    category_id = Column(Integer, ForeignKey('category.id'))
+    description = Column(String(250), nullable=False)
+    category_id = Column(Integer, ForeignKey('category.id'), nullable=False)
     category = relationship(Category)
-    user_id = Column(Integer, ForeignKey('user.id'))
+    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
     user = relationship(User)
 
 engine = create_engine('sqlite:///catalog.db')

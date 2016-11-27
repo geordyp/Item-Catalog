@@ -6,7 +6,7 @@
     <h2>Categories</h2>
     <ul>
       {% for c in categories %}
-        <li><a href="/recommendations/{{c.name}}/items">{{c.name}}</a></li>
+      <li><a href='{{ url_for('showCategory', category_name=c.name) }}'>{{c.name}}</a></li>
       {% endfor %}
     </ul>
   </div>
@@ -14,12 +14,13 @@
     <h2>{{itemHeading}}</h2>
     <ul>
       {% for i in items %}
-        <li><a href="/recommendations/{{i.category.name}}/{{i.title}}">{{i.title}}</a> ({{i.category.name}})</li>
+      <li><a href='{{ url_for('showItem', category_name=i.category.name, item_name=i.title) }}'>{{i.title}}</a>&nbsp;({{i.category.name}})</li>
       {% endfor %}
     </ul>
 
-    <!-- check if is homepage and user is logged in -->
-    <p><a href="/recommendations/new">Add Recommendation</a></p>
+    {% if user and home %}
+    <p><br><br><a href='{{ url_for('newItem') }}'>Add Recommendation</a></p>
+    {% endif %}
   </div>
 </div>
 

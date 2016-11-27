@@ -1,28 +1,28 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% block content %}
 
-<div class="content">
-  <form action="{{ url_for("newItem") }}" method="post">
+<div class='content'>
+  <form action='{{ url_for('newItem') }}' method='post'>
     <h2>Create a New Recommendation</h2>
     <label>
       <div>Title</div>
-      <input type="text" name="title"></input>
+      <input type='text' name='title'></input>
     </label>
     <label>
       <div>Description</div>
-      <textarea name="description"></textarea>
+      <textarea name='description'></textarea>
     </label>
     <label>
       <div>Category</div>
-      <select>
+      <select name='category'>
         {% for c in categories %}
-          <option value="{{c.name}}">{{c.name}}</option>
+        <option value='{{c.id}}'>{{c.name}}</option>
         {% endfor %}
       </select>
     </label>
     <br><br>
     <input type='submit' value='Create'>
-    <a href="{{ url_for("showRecommendations") }}">Cancel</a>
+    <a href='{{ url_for('showRecommendations') }}'>Cancel</a>
   </form>
 </div>
 

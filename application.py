@@ -37,7 +37,13 @@ def showLogin():
                     for x in xrange(32))
     login_session['state'] = state
     # return "The current session state is %s" % login_session['state']
-    return render_template('login.html', STATE=state)
+    user = ""
+    if "username" in login_session:
+        user = login_session["username"]
+
+    return render_template('login.html',
+                           STATE=state,
+                           user=user)
 
 
 @app.route('/gconnect', methods=['POST'])
@@ -122,11 +128,6 @@ def gconnect():
     output += '<h1>Welcome, '
     output += login_session['username']
     output += '!</h1>'
-    output += '<img src="'
-    output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
-    flash("you are now logged in as %s" % login_session['username'])
-    print "done!"
     return output
 
 
@@ -153,9 +154,7 @@ def gdisconnect():
         del login_session['email']
         del login_session['picture']
 
-        response = make_response(json.dumps('Successfully disconnected.'), 200)
-        response.headers['Content-Type'] = 'application/json'
-        return response
+        return redirect('/recommendations')
     else:
         # For whatever reason, the given token was invalid.
         response = make_response(
@@ -186,6 +185,13 @@ def getUserID(email):
         return None
 
 
+def isUserLoggedIn():
+    if "username" in login_session:
+        userID = getUserID(login_session["email"])
+        return getUserInfo(userID)
+    return None
+
+
 # # JSON APIs to view Restaurant Information
 # @app.route('/restaurant/<int:restaurant_id>/menu/JSON')
 # def restaurantMenuJSON(restaurant_id):
@@ -208,64 +214,83 @@ def getUserID(email):
 
 
 @app.route('/')
-@app.route('/recommendations/')
+@app.route('/recommendations')
 def showRecommendations():
+    # retrieve data
     categories = session.query(Category).order_by(asc(Category.name))
     items = session.query(Item).order_by(desc(Item.id)).limit(10)
+
+    # check if user is logged in
+    user = isUserLoggedIn()
+
     return render_template('items.html',
                            itemHeading="Latest Recommendations",
                            categories=categories,
-                           items=items);
-    # restaurants = session.query(Restaurant).order_by(asc(Restaurant.name))
-    # if 'username' not in login_session:
-    #     return render_template('publicrestaurants.html', restaurants=restaurants)
-    # else:
-    #     return render_template('restaurants.html', restaurants=restaurants)
+                           items=items,
+                           home=True,
+                           user=user)
 
 
-@app.route('/recommendations/<string:category_name>/')
-@app.route('/recommendations/<string:category_name>/items/')
+@app.route('/recommendations/<string:category_name>')
+@app.route('/recommendations/<string:category_name>/items')
 def showCategory(category_name):
+    # retrieve data
     categories = session.query(Category).order_by(asc(Category.name))
     category = session.query(Category).filter_by(name=category_name).one()
     items = session.query(Item).filter_by(category_id=category.id).order_by(desc(Item.id))
+
+    # check if user is logged in
+    user = isUserLoggedIn()
+
     return render_template('items.html',
                            itemHeading="Recommendations in " + category_name,
                            categories=categories,
-                           items=items);
-    # restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
-    # creator = getUserInfo(restaurant.user_id)
-    # items = session.query(MenuItem).filter_by(
-    #     restaurant_id=restaurant_id).all()
-    # if 'username' not in login_session or creator.id != login_session['user_id']:
-    #     return render_template('publicmenu.html', items=items, restaurant=restaurant, creator=creator)
-    # else:
-    #     return render_template('menu.html', items=items, restaurant=restaurant, creator=creator)
+                           items=items,
+                           home=False,
+                           user=user)
 
 
-@app.route('/recommendations/<string:category_name>/<string:item_name>/')
+@app.route('/recommendations/<string:category_name>/<string:item_name>')
 def showItem(category_name, item_name):
+    # retrieve data
     item = session.query(Item).filter_by(title=item_name).one()
+
+    # check if user is logged in
+    user = isUserLoggedIn()
+
+    canEdit = False
+    if user and user == item.user:
+        canEdit = True
+
     return render_template("item.html",
-                           item=item);
-    # if 'username' not in login_session:
-    #     return redirect('/login')
-    # restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
-    # if request.method == 'POST':
-    #     newItem = MenuItem(name=request.form['name'], description=request.form['description'], price=request.form[
-    #                        'price'], course=request.form['course'], restaurant_id=restaurant_id, user_id=restaurant.user_id)
-    #     session.add(newItem)
-    #     session.commit()
-    #     flash('New Menu %s Item Successfully Created' % (newItem.name))
-    #     return redirect(url_for('showMenu', restaurant_id=restaurant_id))
-    # else:
-    #     return render_template('newmenuitem.html', restaurant_id=restaurant_id)
+                           item=item,
+                           user=user,
+                           canEdit=canEdit)
 
 
-@app.route('/recommendations/new/', methods=['GET', 'POST'])
+@app.route('/recommendations/new', methods=['GET', 'POST'])
 def newItem():
+    # check if user is logged in
+    user = isUserLoggedIn()
+    if not user:
+        return redirect(url_for('showLogin'))
+
+    # retrieve data
     categories = session.query(Category).order_by(asc(Category.name))
-    return render_template("new_item.html", categories=categories);
+
+    if request.method == 'POST':
+        newItem = Item(title=request.form['title'],
+                       description=request.form['description'],
+                       category_id=request.form['category'],
+                       user=user)
+        session.add(newItem)
+        session.commit()
+        return redirect(url_for('showRecommendations'))
+    else:
+        return render_template('new_item.html',
+                               categories=categories,
+                               user=user)
+
     # if 'username' not in login_session:
     #     return redirect('/login')
     # restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
