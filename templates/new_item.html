@@ -6,11 +6,11 @@
     <h2>What do you want the world to checkout?</h2>
     <label>
       <div>Title</div>
-      <input type='text' name='title'></input>
+      <input type='text' name='title' value={{title}}></input>
     </label>
     <label>
       <div>Description</div>
-      <textarea name='description'></textarea>
+      <textarea name='description'>{{description}}</textarea>
     </label>
     <label>
       <div>Category</div>
@@ -20,7 +20,7 @@
         {% endfor %}
       </select>
     </label>
-    <br><br>
+    <br><br><div class="error">{{error}}</div><br>
     <input type='submit' value='Create'>
     <a href='{{ url_for('showRecommendations') }}'>Cancel</a>
   </form>

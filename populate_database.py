@@ -18,6 +18,7 @@ DBSession = sessionmaker(bind=engine)
 # session.rollback()
 session = DBSession()
 
+# The category objects below MUST be added
 category1 = Category(name='Games')
 session.add(category1)
 session.commit()
@@ -42,6 +43,7 @@ category6 = Category(name='TV Shows')
 session.add(category6)
 session.commit()
 
+# Anything below this point is just filler data, safe to remove or comment out
 user1 = User(name='Paul', email='paul@gmail.com')
 session.add(user1)
 session.commit()
@@ -116,4 +118,4 @@ item10 = Item(title='Breaking Bad',
 session.add(item10)
 session.commit()
 
-print 'added menu items!'
+print 'populated the database!'

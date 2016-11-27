@@ -30,9 +30,11 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 
-# Create anti-forgery state token
 @app.route('/login')
 def showLogin():
+    """ Display login page for the user to sign in """
+    # Create anti-forgery state token to prevent request forgery
+    # Store it in the session for later validation
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                     for x in xrange(32))
     login_session['state'] = state
@@ -48,6 +50,7 @@ def showLogin():
 
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
+    """ Handles the code sent back from the callback method """
     # Validate state token
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter.'), 401)
@@ -131,10 +134,10 @@ def gconnect():
     return output
 
 
-# DISCONNECT - Revoke a current user's token and reset their login_session
 @app.route('/gdisconnect')
 def gdisconnect():
-        # Only disconnect a connected user.
+    """ Log a user out of the application """
+    # Revoke a current user's token and reset their login_session
     credentials = login_session.get('credentials')
     if credentials is None:
         response = make_response(
@@ -164,6 +167,7 @@ def gdisconnect():
 
 
 def createUser(login_session):
+    """ Create a new user and store them in the database """
     newUser = User(name=login_session['username'], email=login_session[
                    'email'])
     session.add(newUser)
@@ -173,11 +177,13 @@ def createUser(login_session):
 
 
 def getUserInfo(user_id):
+    """ Get a user from the database with the given id """
     user = session.query(User).filter_by(id=user_id).one()
     return user
 
 
 def getUserID(email):
+    """ Get a user's id with the given email """
     try:
         user = session.query(User).filter_by(email=email).one()
         return user.id
@@ -186,6 +192,7 @@ def getUserID(email):
 
 
 def isUserLoggedIn():
+    """ If a user is logged in, return the current user """
     if 'username' in login_session:
         userID = getUserID(login_session['email'])
         return getUserInfo(userID)
@@ -194,12 +201,14 @@ def isUserLoggedIn():
 
 @app.route('/recommendations/categories/JSON')
 def recommendationsJSON():
+    """ Returns a JSON of all the categories """
     categories = session.query(Category).all()
     return jsonify(categories=[c.serialize for c in categories])
 
 
 @app.route('/recommendations/<string:category_name>/JSON')
 def categoryJSON(category_name):
+    """ Returns a JSON of all the items of a specified category """
     category = session.query(Category).filter_by(name=category_name).one()
     items = session.query(Item).filter_by(
         category_id=category.id).all()
@@ -208,6 +217,7 @@ def categoryJSON(category_name):
 
 @app.route('/recommendations/JSON')
 def recommendationsJSON():
+    """ Returns a JSON of all the items """
     items = session.query(Item).all()
     return jsonify(items=[i.serialize for i in items])
 
@@ -215,6 +225,7 @@ def recommendationsJSON():
 @app.route('/')
 @app.route('/recommendations')
 def showRecommendations():
+    """ Show the home page, all recommendations (items) """
     # retrieve data
     categories = session.query(Category).order_by(asc(Category.name))
     items = session.query(Item).order_by(desc(Item.id)).limit(10)
@@ -233,6 +244,7 @@ def showRecommendations():
 @app.route('/recommendations/<string:category_name>')
 @app.route('/recommendations/<string:category_name>/items')
 def showCategory(category_name):
+    """ Show recommendations (items) from the specified category """
     # retrieve data
     categories = session.query(Category).order_by(asc(Category.name))
     category = session.query(Category).filter_by(name=category_name).one()
@@ -251,6 +263,7 @@ def showCategory(category_name):
 
 @app.route('/recommendations/<string:category_name>/<string:item_name>')
 def showItem(category_name, item_name):
+    """ Show a specific recommendation (item) and it's info """
     # retrieve data
     item = session.query(Item).filter_by(title=item_name).one()
 
@@ -269,6 +282,7 @@ def showItem(category_name, item_name):
 
 @app.route('/recommendations/new', methods=['GET', 'POST'])
 def newItem():
+    """ Show a form to create a new recommendation (item) """
     # check if user is logged in
     user = isUserLoggedIn()
     if not user:
@@ -278,21 +292,34 @@ def newItem():
     categories = session.query(Category).order_by(asc(Category.name))
 
     if request.method == 'POST':
-        newItem = Item(title=request.form['title'],
-                       description=request.form['description'],
-                       category_id=request.form['category'],
-                       user=user)
-        session.add(newItem)
-        session.commit()
-        return redirect(url_for('showRecommendations'))
+        if request.form['title'] and request.form['description']:
+            newItem = Item(title=request.form['title'],
+                           description=request.form['description'],
+                           category_id=request.form['category'],
+                           user=user)
+            session.add(newItem)
+            session.commit()
+            return redirect(url_for('showRecommendations'))
+        else:
+            error = 'Please include a title and description.'
+            return render_template('new_item.html',
+                                   categories=categories,
+                                   title=request.form['title'],
+                                   description=request.form['description'],
+                                   error=error,
+                                   user=user)
     else:
         return render_template('new_item.html',
                                categories=categories,
+                               title='',
+                               description='',
+                               error='',
                                user=user)
 
 
 @app.route('/recommendations/<string:item_name>/edit', methods=['GET', 'POST'])
 def editItem(item_name):
+    """ Show a form to edit a specific recommendation (item) """
     # check if user is logged in
     user = isUserLoggedIn()
     if not user:
@@ -330,6 +357,7 @@ def editItem(item_name):
 
 @app.route('/recommendations/<string:item_name>/delete', methods=['GET', 'POST'])
 def deleteItem(item_name):
+    """ Show a form to delete a specific recommendation (item) """
     # check if user is logged in
     user = isUserLoggedIn()
     if not user:

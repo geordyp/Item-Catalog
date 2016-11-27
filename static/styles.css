@@ -89,3 +89,7 @@ textarea {
   height: 100px;
   width: 300px;
 }
+
+.error {
+  color: red;
+}
