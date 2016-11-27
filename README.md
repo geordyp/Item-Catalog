@@ -19,11 +19,12 @@ items in each category.
    followed by 'vagrant ssh'
 4. Once vagrant is up and running cd to into /vagrant/
 5. The database should be setup already. Incase you want to
-   start fresh, you can delete catalog.db and run
-   database_setup.py. Then run populate_database.py to add
-   the categories and some filler data. I make it clear in
+   start fresh, you can delete catalog.db and use the
+   'python database_setup.py' command. Then use the
+   'python populate_database.py' command to add the
+   categories and some filler data. I make it clear in
    the file where unnecessary data is added so feel free
    to remove or comment out those lines if you wish.
-6. At this point, all the data should be setup. You can run
-   application.py to launch the application. Just open up
-   a browser and navigate to localhost:5000.
+6. At this point, all the data should be setup. You can launch
+   the application using the 'python application.py' command.
+   Just open up a browser and navigate to localhost:5000.
