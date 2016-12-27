@@ -9,8 +9,8 @@ import datetime
 
 Base = declarative_base()
 
-class User(Base):
-    __tablename__ = 'user'
+class Person(Base):
+    __tablename__ = 'person'
 
     id = Column(Integer, primary_key=True)
     name = Column(String(250), nullable=False)
@@ -37,11 +37,11 @@ class Item(Base):
 
     id = Column(Integer, primary_key=True)
     title = Column(String(80), nullable=False)
-    description = Column(String(250), nullable=False)
+    description = Column(String(500), nullable=False)
     category_id = Column(Integer, ForeignKey('category.id'), nullable=False)
     category = relationship(Category)
-    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
-    user = relationship(User)
+    user_id = Column(Integer, ForeignKey('person.id'), nullable=False)
+    user = relationship(Person)
 
     @property
     def serialize(self):
@@ -53,7 +53,7 @@ class Item(Base):
             'description': self.description,
         }
 
-engine = create_engine('sqlite:///catalog.db')
+engine = create_engine('postgresql://catalog:P1zzaCat@localhost/item_catalog')
 
 
 Base.metadata.create_all(engine)
