@@ -9,7 +9,7 @@ I named the web application "Yo Check This Out!" The concept for the site is use
 * OAuth 2.0
 
 ## Setup
-1. Clone [fullstack-nanodegree-vm repo](https://github.com/udacity/fullstack-nanodegree-vm) to your machine.
+1. Clone [fullstack-nanodegree-vm](https://github.com/udacity/fullstack-nanodegree-vm) to your machine.
 2. cd into '/vagrant/catalog' and replace its contents with this repo's code.
 3. From the catalog directory use the command `vagrant up` followed by `vagrant ssh`.
 4. Once vagrant is up and running cd to into '/vagrant/'.
