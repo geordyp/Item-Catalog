@@ -9,10 +9,10 @@ I named the web application "Yo Check This Out!" The concept for the site is use
 * OAuth 2.0
 
 ## Setup
-1. Clone [fullstack-nanodegree-vm](https://github.com/udacity/fullstack-nanodegree-vm) to your machine.
-2. cd into 'fullstack-nanodegree-vm/vagrant' and clone this repo.
-3. From within 'fullstack-nanodegree-vm/vagrant' directory use the command `vagrant up` followed by `vagrant ssh`.
-4. Once vagrant is up and running cd into '/vagrant/Item_Catalog'.
+1. After cloning this repo to your machine, cd into 'Item_Catalog'.
+2. Enter the command `vagrant up`. This command can take awhile to run. Ignore the error `default: stdin: is not a tty`.
+3. Enter the command `vagrant ssh`.
+4. Once vagrant is up and running cd into '/vagrant'.
 5. The database should be setup already. Incase you want to start fresh, you can delete catalog.db and use the `python database_setup.py` command. Then use the `python populate_database.py` command to add the categories and some filler data. I make it clear in the file where unnecessary data is added so feel free to remove or comment out those lines if you wish.
 6. At this point, all the data should be setup. You can launch the application using the `python application.py` command. Just open up a browser and navigate to 'localhost:5000'.
 
