@@ -16,5 +16,5 @@ I named the web application "Yo Check This Out!" The concept for the site is use
 5. The database should be setup already. Incase you want to start fresh, you can delete catalog.db and use the `python database_setup.py` command. Then use the `python populate_database.py` command to add the categories and some filler data. I make it clear in the file where unnecessary data is added so feel free to remove or comment out those lines if you wish.
 6. At this point, all the data should be setup. You can launch the application using the `python application.py` command. Just open up a browser and navigate to 'localhost:5000'.
 
-## Authors
+## Author
 Geordy Williams
