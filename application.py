@@ -300,6 +300,7 @@ def newItem():
     """ Show a form to create a new recommendation (item) """
     # retrieve data
     categories = session.query(Category).order_by(asc(Category.name))
+    user = isUserLoggedIn()
 
     if request.method == 'POST':
         if request.form['title'] and request.form['description']:
@@ -334,6 +335,7 @@ def editItem(item_name):
     # retrieve data
     categories = session.query(Category).order_by(asc(Category.name))
     editedItem = session.query(Item).filter_by(title=item_name).one()
+    user = isUserLoggedIn()
 
     # make the user created the item they're about to edit
     if user != editedItem.user:
@@ -367,6 +369,7 @@ def deleteItem(item_name):
     """ Show a form to delete a specific recommendation (item) """
     # retrieve data
     deletedItem = session.query(Item).filter_by(title=item_name).one()
+    user = isUserLoggedIn()
 
     # make the user created the item they're about to delete
     if user != deletedItem.user:
