@@ -8,6 +8,11 @@ body {
 
 a {
   color: #fc9b2d;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #76db6b;
 }
 
 .container {
