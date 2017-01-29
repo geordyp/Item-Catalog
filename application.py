@@ -202,7 +202,7 @@ def isUserLoggedIn():
 
 
 @app.route('/recommendations/categories/JSON')
-def recommendationsJSON():
+def categoriesJSON():
     """ Returns a JSON of all the categories """
     categories = session.query(Category).all()
     return jsonify(categories=[c.serialize for c in categories])
